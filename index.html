@@ -4,7 +4,7 @@
     <style>
 
     </style>
-    <script src="/scripts/snippet-javascript-console.min.js?v=1"></script>
+    <!--<script src="/scripts/snippet-javascript-console.min.js?v=1"></script>-->
     <style type="text/css">
         .as-console-wrapper {
             position: fixed;
@@ -122,40 +122,44 @@
 </head>
 
 <body>
-    <input type="file" id="file-upload" onchange="processFile(event)">
-    <script type="text/javascript">
-        function ab2str(buf) {
-            return String.fromCharCode.apply(null, new Uint16Array(buf));
-        }
-
-        function processFile(evt) {
-            var file = evt.target.files[0],
-                reader = new FileReader();
-
-            reader.onload = function (e) {
-                var data = e.target.result,
-                    iv = crypto.getRandomValues(new Uint8Array(16));
-
-                crypto.subtle.generateKey({
-                        'name': 'AES-CBC',
-                        'length': 256
-                    }, false, ['encrypt', 'decrypt'])
-                    .then(key => crypto.subtle.encrypt({
-                        'name': 'AES-CBC',
-                        iv
-                    }, key, data))
-                    .then(encrypted => {
-                        console.log(encrypted);
-                        //alert('The encrypted data is ' + encrypted.byteLength + ' bytes long'); // encrypted is an ArrayBuffer
-                        alert('The encrypted data is ' + ab2str(encrypted));
-                    })
-                    .catch(console.error);
+    <form method="post">
+        <input name="video" type="file" id="file-upload" >
+        <script type="text/javascript">
+            function ab2str(buf) {
+                return String.fromCharCode.apply(null, new Uint16Array(buf));
             }
 
-            reader.readAsArrayBuffer(file);
-        }
-    </script>
+            function processFile(evt) {
+                var file = evt.target.files[0],
+                    reader = new FileReader();
 
+                reader.onload = function (e) {
+                    var data = e.target.result,
+                        iv = crypto.getRandomValues(new Uint8Array(16));
+
+                    crypto.subtle.generateKey({
+                            'name': 'AES-CBC',
+                            'length': 256
+                        }, false, ['encrypt', 'decrypt'])
+                        .then(key => crypto.subtle.encrypt({
+                            'name': 'AES-CBC',
+                            iv
+                        }, key, data))
+                        .then(encrypted => {
+                            console.log(encrypted);
+                            //alert('The encrypted data is ' + encrypted.byteLength + ' bytes long'); // encrypted is an ArrayBuffer
+                            alert('The encrypted data is ' + ab2str(encrypted));
+                        })
+                        .catch(console.error);
+                }
+
+                reader.readAsArrayBuffer(file);
+            }
+        </script>
+        <button type="submit" class="btn btn-white btn-round btn-just-icon">
+            <i class="material-icons">search</i><div class="ripple-container"></div>
+        </button>
+    </form>
     <div class="as-console-wrapper" style="display: block;">
         <div class="as-console">
             <div class="as-console-row" data-date="21:00:56.085"><code class="as-console-row-code">{}</code></div>
